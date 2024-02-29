@@ -1,6 +1,7 @@
 package dev.be.project.direction.service;
 
 import dev.be.project.api.dto.DocumentDto;
+import dev.be.project.api.service.KakaoCategorySearchService;
 import dev.be.project.direction.entity.Direction;
 import dev.be.project.direction.repository.DirectionRepository;
 import dev.be.project.pharmacy.dto.PharmacyDto;
@@ -30,6 +31,7 @@ public class DirectionService {
 
     private final PharmacySearchService pharmacySearchService;
     private final DirectionRepository directionRepository;
+    private final KakaoCategorySearchService kakaoCategorySearchService;
 
     @Transactional
     public List<Direction> saveAll(List<Direction> directionList) {
@@ -38,29 +40,26 @@ public class DirectionService {
 
     }
 
-    public List<Direction> buildDirectionList(DocumentDto documentDto) {
-        if(Objects.isNull(documentDto)) return Collections.emptyList();
+    public List<Direction> buildDirectionListByCategoryApi(DocumentDto inputDocumentDto) {
+        if (Objects.isNull(inputDocumentDto)) return Collections.emptyList();
 
         // 약국 데이터 조회 & 거리계산 알고리즘을 이용하여 고객과 약국 사이의 거리를 계산하고 sort
-        pharmacySearchService.searchPharmacyDtoList().stream().map(pharmacyDto -> Direction.builder()
-                .inputAddress(documentDto.getAddressName())
-                .inputLatitude(documentDto.getLatitude())
-                .inputLongtitude(documentDto.getLongitude())
-                .targetPharmacyName(pharmacyDto.getPharmacyAddress())
-                .targerAddress(pharmacyDto.getPharmacyAddress())
-                .targetLatitude(pharmacyDto.getLatitude())
-                .targetLongtitude(pharmacyDto.getLongitude())
-                .distance(
-                        calculateDistance(documentDto.getLatitude(), documentDto.getLongitude(), pharmacyDto.getLatitude(), pharmacyDto.getLongitude())
-                )
-                .build())
-                .filter(direction -> direction.getDistance() <= RADIUS_KM)
-                .sorted(Comparator.comparing(Direction::getDistance))
+        return kakaoCategorySearchService.requestPharmacyCategorySearch(inputDocumentDto.getLatitude(), inputDocumentDto.getLongitude(), RADIUS_KM)
+                .getDocumentDtoList()
+                .stream().map(resultDocumentDto -> Direction.builder()
+                        .inputAddress(inputDocumentDto.getAddressName())
+                        .inputLatitude(inputDocumentDto.getLatitude())
+                        .inputLongtitude(inputDocumentDto.getLongitude())
+                        .targetPharmacyName(resultDocumentDto.getPlaceName())
+                        .targerAddress(resultDocumentDto.getAddressName())
+                        .targetLatitude(resultDocumentDto.getLatitude())
+                        .targetLongtitude(resultDocumentDto.getLongitude())
+                        .distance(
+                                resultDocumentDto.getDistance() * 0.001
+                        )
+                        .build())
                 .limit(MAX_SAERCH_COUNT)
                 .collect(Collectors.toList());
-
-
-
 
 
     }
