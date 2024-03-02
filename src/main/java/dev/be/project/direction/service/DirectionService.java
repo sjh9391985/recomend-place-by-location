@@ -51,7 +51,7 @@ public class DirectionService {
                         .inputLatitude(inputDocumentDto.getLatitude())
                         .inputLongtitude(inputDocumentDto.getLongitude())
                         .targetPharmacyName(resultDocumentDto.getPlaceName())
-                        .targerAddress(resultDocumentDto.getAddressName())
+                        .targetAddress(resultDocumentDto.getAddressName())
                         .targetLatitude(resultDocumentDto.getLatitude())
                         .targetLongtitude(resultDocumentDto.getLongitude())
                         .distance(

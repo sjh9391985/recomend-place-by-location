@@ -28,7 +28,7 @@ public class Direction {
 
     // 약국
     private String targetPharmacyName;
-    private String targerAddress;
+    private String targetAddress;
     private double targetLatitude;
     private double targetLongtitude;
 
