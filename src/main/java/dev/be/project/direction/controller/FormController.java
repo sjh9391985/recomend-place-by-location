@@ -22,7 +22,7 @@ public class FormController {
         return "main";
     }
 
-    @PostMapping("/")
+    @PostMapping("/search")
     public ModelAndView postDirection(@ModelAttribute InputDto inputDto) {
 
         ModelAndView modelAndView = new ModelAndView();
@@ -30,6 +30,6 @@ public class FormController {
         modelAndView.addObject("outputFormList",
                 pharmacyRecommendationService.recommendPharmacyList(inputDto.getAddress()));
         return modelAndView;
-        
+
     }
 }
