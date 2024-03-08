@@ -62,3 +62,13 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+processTestResources {
+    boolean hasProperty = project.hasProperty("KAKAO_REST_API_KEY")
+
+    println hasProperty
+
+    filesMatching('**/application.yml') {
+        expand(project.properties)
+    }
+}
