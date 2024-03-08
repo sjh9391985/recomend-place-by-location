@@ -84,7 +84,10 @@ class DirectionServiceTest extends AbstractIntegrationContainerBaseTest{
 
         when:
         pharmacySearchService.searchPharmacyDtoList() >> pharmacyList
-        def results = directionService.buildDirectionList(documentDto)
+        def results = directionService.buildDirectionListByCategoryApi(documentDto)
+
+        then:
+        results != null
     }
 
 }
