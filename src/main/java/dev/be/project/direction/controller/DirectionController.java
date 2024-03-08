@@ -20,24 +20,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class DirectionController {
 
     private final DirectionService directionService;
-    private static final String DIRECTION_BASE_URL = "https://map.kakao.com/link/map/";
-
     @GetMapping("/dir/{encodedId}")
     public String searchDirection(@PathVariable("encodedId") String encodedId) {
-        Direction direction = directionService.findById(encodedId);
-
-        String params = String.join(
-                ",",
-                direction.getTargetPharmacyName(),
-                String.valueOf(direction.getTargetLatitude()),
-                String.valueOf(direction.getTargetLongtitude())
-        );
-
-        String result = UriComponentsBuilder.fromHttpUrl(DIRECTION_BASE_URL + params)
-                .toUriString();
-
-        return "redirect:"+result;
+        String result = directionService.findDirectionUrlById(encodedId);
+        return "redirect:" + result;
     }
-
 
 }
